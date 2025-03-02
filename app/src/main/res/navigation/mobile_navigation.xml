@@ -36,5 +36,13 @@
         <action
             android:id="@+id/action_mapsFragment_to_navigation_home"
             app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_mapsFragment_to_selfieFragment"
+            app:destination="@id/selfieFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/selfieFragment"
+        android:name="com.example.attendanceapp.ui.selfie.SelfieFragment"
+        android:label="fragment_selfie"
+        tools:layout="@layout/fragment_selfie" />
 </navigation>

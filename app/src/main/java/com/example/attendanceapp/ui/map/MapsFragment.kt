@@ -88,6 +88,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         _binding = FragmentMapsBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        binding.btnNext.setOnClickListener{
+            findNavController().navigate(R.id.action_mapsFragment_to_selfieFragment)
+        }
+
         return root
     }
 
