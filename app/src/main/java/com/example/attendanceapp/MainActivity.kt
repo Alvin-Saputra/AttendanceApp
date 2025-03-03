@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.mapsFragment || destination.id == R.id.selfieFragment) {
+            if (destination.id == R.id.mapsFragment || destination.id == R.id.selfieFragment || destination.id == R.id.successFragment) {
                 // Sembunyikan BottomNavigationView
                 navView.visibility = View.GONE
             } else {

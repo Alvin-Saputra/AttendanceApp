@@ -19,6 +19,8 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.example.attendanceapp.R
 import com.example.attendanceapp.databinding.FragmentSelfieBinding
 import com.example.attendanceapp.utility.createCustomTempFile
 import com.example.attendanceapp.repository.Result
@@ -122,10 +124,7 @@ class SelfieFragment : Fragment() {
                                 binding.progressBar.visibility = View.GONE
                                 val resultUploadImage = result.data
                                 showToast(resultUploadImage.status)
-//                                intent = Intent(this, MainActivity::class.java)
-//                                intent.flags =
-//                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-//                                startActivity(intent)
+                                findNavController().navigate(R.id.action_selfieFragment_to_successFragment)
                             }
 
                             is Result.Error -> {

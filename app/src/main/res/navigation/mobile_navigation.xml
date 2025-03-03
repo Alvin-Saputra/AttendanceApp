@@ -44,5 +44,18 @@
         android:id="@+id/selfieFragment"
         android:name="com.example.attendanceapp.ui.selfie.SelfieFragment"
         android:label="fragment_selfie"
-        tools:layout="@layout/fragment_selfie" />
+        tools:layout="@layout/fragment_selfie" >
+        <action
+            android:id="@+id/action_selfieFragment_to_successFragment"
+            app:destination="@id/successFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/successFragment"
+        android:name="com.example.attendanceapp.ui.success.SuccessFragment"
+        android:label="fragment_success"
+        tools:layout="@layout/fragment_success" >
+        <action
+            android:id="@+id/action_successFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 </navigation>

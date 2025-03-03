@@ -10,6 +10,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.location.Location
 import android.os.Build
@@ -24,8 +27,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
+import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.navigateUp
 import com.example.attendanceapp.R
@@ -41,8 +48,11 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
@@ -55,11 +65,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     private val binding get() = _binding!!
     private lateinit var geofencingClient: GeofencingClient
 
-//    private val centerLat = -6.225432120342684
-//    private val centerLng = 106.65717797155213
-    private val centerLat = -6.118588
-    private val centerLng = 106.686910
-    private val geofenceRadius = 50.0
+    private val centerLat = -6.225596758377779
+    private val centerLng = 106.65707396575687
+//    private val centerLat = -6.118588
+//    private val centerLng = 106.686910
+    private val geofenceRadius = 100.0
 
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(requireContext(), GeofenceBroadcastReceiver::class.java).apply {
@@ -77,6 +87,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 //            viewModel.setGeofenceStatus(status) // Perbarui ViewModel
             showToast(status)
             showToast("wkwkkkw")
+
+            if(status != null){
+                binding.btnNext.isEnabled = true
+            }
         }
     }
 
@@ -92,6 +106,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         binding.btnNext.setOnClickListener{
             findNavController().navigate(R.id.action_mapsFragment_to_selfieFragment)
         }
+
+        binding.btnNext.isEnabled = false
 
         return root
     }
@@ -127,6 +143,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         mMap.uiSettings.isMapToolbarEnabled = true
 
         checkPermissions()
+//        setMapStyle()
 
     }
 
@@ -289,7 +306,19 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                     val userLocation = LatLng(it.latitude, it.longitude)
 
                     // Tambahkan marker untuk lokasi pengguna
-                    addMarker(userLocation, "Lokasi Anda")
+//                    addMarker(userLocation, "Lokasi Anda")
+
+//                    val markerOptions = MarkerOptions()
+//                        .position(userLocation)
+//                        .title("Lokasi Anda")
+//                        .icon(
+//                            vectorToBitmap(
+//                                R.drawable.baseline_person_pin_24,
+//                                Color.parseColor("#3DDC84")
+//                            )
+//                        )
+//
+//                    mMap.addMarker(markerOptions)
 
                     // Tambahkan marker dan lingkaran untuk lokasi kampus
                     val kampusLocation = LatLng(centerLat, centerLng)
@@ -340,6 +369,43 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             showToast("Error: ${e.message}")
         }
 
+    }
+
+
+    private fun vectorToBitmap(@DrawableRes id: Int, @ColorInt color: Int): BitmapDescriptor {
+        val vectorDrawable = ResourcesCompat.getDrawable(resources, id, null)
+        if (vectorDrawable == null) {
+            Log.e("BitmapHelper", "Resource not found")
+            return BitmapDescriptorFactory.defaultMarker()
+        }
+        val bitmap = Bitmap.createBitmap(
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+        DrawableCompat.setTint(vectorDrawable, color)
+        vectorDrawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+
+    private fun setMapStyle() {
+        try {
+            val success =
+                mMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        requireContext(),
+                        R.raw.map_style
+                    )
+                )
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.")
+            }
+        } catch (exception: Resources.NotFoundException) {
+            Log.e(TAG, "Can't find style. Error: ", exception)
+        }
     }
 
 
