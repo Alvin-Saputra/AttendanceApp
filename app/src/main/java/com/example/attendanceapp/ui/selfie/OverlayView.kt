@@ -34,7 +34,7 @@ class OverlayView(context: Context, attrs: AttributeSet? = null) : View(context,
     }
 
     // RectF untuk menyimpan dimensi persegi rounded
-    private val rectF = RectF()
+    val rectF = RectF()
 
     // Radius sudut persegi rounded
     private val cornerRadius = 40f

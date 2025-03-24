@@ -1,6 +1,7 @@
 package com.example.attendanceapp.utility
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
@@ -28,3 +29,13 @@ fun uriToFile(imageUri: Uri, context: Context): File {
     inputStream.close()
     return myFile
 }
+
+fun saveBitmapToFile(context: Context, bitmap: Bitmap): File {
+    val file = createCustomTempFile(context)
+    val outputStream = FileOutputStream(file)
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+    outputStream.flush()
+    outputStream.close()
+    return file
+}
+

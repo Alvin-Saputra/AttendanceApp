@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.attendanceapp.R
 import com.example.attendanceapp.databinding.FragmentSelfieBinding
 import com.example.attendanceapp.databinding.FragmentSuccessBinding
@@ -33,6 +34,10 @@ class SuccessFragment : Fragment() {
         Handler(Looper.getMainLooper()).postDelayed({
             playAnimation()
         }, 1500)
+
+        binding.btnBackToHome.setOnClickListener{
+            findNavController().navigate(R.id.action_successFragment_to_navigation_home)
+        }
 
         return root
     }

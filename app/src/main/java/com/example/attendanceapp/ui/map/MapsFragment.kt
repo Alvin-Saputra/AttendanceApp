@@ -65,10 +65,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     private val binding get() = _binding!!
     private lateinit var geofencingClient: GeofencingClient
 
-    private val centerLat = -6.225596758377779
-    private val centerLng = 106.65707396575687
-//    private val centerLat = -6.118588
-//    private val centerLng = 106.686910
+//    private val centerLat = -6.225596758377779
+//    private val centerLng = 106.65707396575687
+    private val centerLat = -6.118588
+    private val centerLng = 106.686910
     private val geofenceRadius = 100.0
 
     private val geofencePendingIntent: PendingIntent by lazy {

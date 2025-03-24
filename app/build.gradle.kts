@@ -50,6 +50,8 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.play.services.maps)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.fragment.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -64,5 +66,14 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+
+    implementation ("io.coil-kt:coil:2.2.2")
+    implementation ("io.coil-kt:coil-gif:2.2.2")
+
+    implementation ("com.github.bumptech.glide:glide:4.15.")
+    implementation ("com.github.bumptech.glide:okhttp3-integration:4.15.1")
+
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 }

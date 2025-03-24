@@ -8,8 +8,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import coil.decode.GifDecoder
+import coil.load
+import coil.request.CachePolicy
+import com.bumptech.glide.Glide
 import com.example.attendanceapp.R
 import com.example.attendanceapp.databinding.FragmentHomeBinding
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -29,6 +34,16 @@ class HomeFragment : Fragment() {
     ): View {
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
+
+//        try {
+//            val inputStream = requireContext().assets.open("Deadline.gif")
+//            Glide.with(this)
+//                .asGif()
+//                .load(inputStream)
+//                .into(binding.gifImageView)
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root

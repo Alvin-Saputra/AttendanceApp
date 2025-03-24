@@ -40,7 +40,7 @@
             android:value="${API_KEY}" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>

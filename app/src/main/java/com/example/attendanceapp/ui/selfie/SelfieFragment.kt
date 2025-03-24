@@ -6,12 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -23,6 +24,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.attendanceapp.R
 import com.example.attendanceapp.databinding.FragmentSelfieBinding
 import com.example.attendanceapp.utility.createCustomTempFile
+import com.example.attendanceapp.utility.saveBitmapToFile
 import com.example.attendanceapp.repository.Result
 
 class SelfieFragment : Fragment() {
@@ -104,7 +106,23 @@ class SelfieFragment : Fragment() {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     showToast("Success Taking Selfie")
 
-                    var uri = output.savedUri
+                    val uri = output.savedUri ?: return
+
+//                    // Convert URI to Bitmap
+//                    val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+//
+//                    // Crop image based on OverlayView
+//                    val croppedBitmap = cropBitmapToOverlay(bitmap)
+//
+//                    // Save the cropped image
+//                    val croppedFile = saveBitmapToFile(requireContext(), croppedBitmap)
+//
+//                    val stringUriCroppedfile = Uri.fromFile(croppedFile)
+
+//                    val mBundle = Bundle()
+//                    mBundle.putString(EXTRA_URI, stringUriCroppedfile)
+//                    findNavController().navigate(R.id.action_selfieFragment_to_validationFragment, mBundle)
+
 //                    val intent = Intent()
 //                    intent.putExtra(EXTRA_CAMERAX_IMAGE, output.savedUri.toString())
 //                    setResult(CAMERAX_RESULT, intent)
@@ -151,8 +169,36 @@ class SelfieFragment : Fragment() {
         Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
     }
 
+
+    private fun cropBitmapToOverlay(bitmap: Bitmap): Bitmap {
+        // Ukuran view kamera
+        val viewWidth = binding.viewFinder.width
+        val viewHeight = binding.viewFinder.height
+
+        // Ukuran cropping dari OverlayView
+        val rectWidth = viewWidth * 0.8f    // Sesuai dengan OverlayView
+        val rectHeight = viewHeight * 0.4f
+
+
+        val left = ((viewWidth - rectWidth) / 2).toInt()
+        val top = ((viewHeight - rectHeight) / 2).toInt()
+
+        // Skala bitmap agar sesuai dengan ukuran preview
+        val scaleX = bitmap.width.toFloat() / viewWidth
+        val scaleY = bitmap.height.toFloat() / viewHeight
+
+        val cropLeft = (left * scaleX).toInt()
+        val cropTop = (top * scaleY).toInt()
+        val cropWidth = (rectWidth * scaleX).toInt()
+        val cropHeight = (rectHeight * scaleY).toInt()
+
+        return Bitmap.createBitmap(bitmap, cropLeft, cropTop, cropWidth, cropHeight)
+    }
+
+
     companion object {
         private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
+        val EXTRA_URI = "URI"
     }
 
 }
