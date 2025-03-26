@@ -50,7 +50,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.play.services.maps)
-    implementation(libs.androidx.legacy.support.v4)
+
     implementation(libs.androidx.fragment.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -75,5 +75,9 @@ dependencies {
     implementation ("com.github.bumptech.glide:okhttp3-integration:4.15.1")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation("com.applandeo:material-calendar-view:1.9.0")
+
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
 
 }

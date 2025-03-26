@@ -1,22 +1,24 @@
-package com.example.attendanceapp.ui.selfie
+package com.example.attendanceapp.ui.account
 
 import android.content.Context
-import android.net.Uri
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.attendanceapp.data.pref.UserModel
-import com.example.attendanceapp.data.remote.response.FaceClassificationResponse
 import com.example.attendanceapp.injection.DependencyInjection
 import com.example.attendanceapp.repository.Repository
-import com.example.attendanceapp.repository.Result
-import com.example.attendanceapp.ui.main.MainViewModel
+import kotlinx.coroutines.launch
 
-class SelfieViewModel(private val repository: Repository): ViewModel() {
+class AccountViewModel(private val repository: Repository) : ViewModel() {
 
-    fun uploadSelfie(context: Context, imageUri: Uri, userId: String): LiveData<Result<FaceClassificationResponse>> =
-        repository.uploadSelfie(context, imageUri, userId)
+    fun logout() {
+        viewModelScope.launch {
+            repository.logout()
+        }
+    }
 
     fun getSession(): LiveData<UserModel> {
         return repository.getSession().asLiveData()
@@ -25,9 +27,9 @@ class SelfieViewModel(private val repository: Repository): ViewModel() {
 
 class ViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(SelfieViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(AccountViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return SelfieViewModel(DependencyInjection.provideRepository(context)) as T
+            return AccountViewModel(DependencyInjection.provideRepository(context)) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -1,20 +1,16 @@
 package com.example.attendanceapp.ui.main
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
 //import androidx.glance.visibility
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.attendanceapp.R
 import com.example.attendanceapp.databinding.ActivityMainBinding
-import com.example.attendanceapp.ui.main.ViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             // menu should be considered as top level destinations.
             val appBarConfiguration = AppBarConfiguration(
                 setOf(
-                    R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
+                    R.id.navigation_home, R.id.navigation_attendance_history, R.id.navigation_account
                 )
             )
 //        setupActionBarWithNavController(navController, appBarConfiguration)

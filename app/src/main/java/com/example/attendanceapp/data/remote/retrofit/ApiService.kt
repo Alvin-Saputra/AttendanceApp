@@ -1,5 +1,6 @@
 package com.example.attendanceapp.data.remote.retrofit
 
+import com.example.attendanceapp.data.remote.response.AttendanceHistoryResponse
 import com.example.attendanceapp.data.remote.response.FaceClassificationResponse
 import com.example.attendanceapp.data.remote.response.LoginResponse
 import okhttp3.MultipartBody
@@ -17,6 +18,7 @@ interface ApiService {
     @POST("process-image")
     fun classifyFace(
         @Part image: MultipartBody.Part,
+        @Part("user_id") userId: RequestBody,
     ): Call<FaceClassificationResponse>
 
     @FormUrlEncoded
@@ -25,4 +27,11 @@ interface ApiService {
         @Field("user_id") userId: String,
         @Field("password") password: String
     ): Call<LoginResponse>
+
+
+    @FormUrlEncoded
+    @POST("get-attendance-list")
+    fun getAttendanceHistory(
+        @Field("user_id") userId: String,
+    ): Call<AttendanceHistoryResponse>
 }

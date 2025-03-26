@@ -52,16 +52,16 @@
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginStart="64dp"
-        android:layout_marginTop="64dp"
         android:layout_marginEnd="64dp"
+        android:layout_marginBottom="144dp"
         android:text="Check In"
         android:textAlignment="textStart"
         app:icon="@drawable/baseline_arrow_forward_24"
         app:iconGravity="end"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title_check_in_overtime" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tv_day"

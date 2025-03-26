@@ -20,16 +20,20 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.attendanceapp.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_attendance_history"
+        android:name="com.example.attendanceapp.ui.attendance_history.AttendanceHistoryFragment"
+        android:label="@string/title_attendance_history"
+        tools:layout="@layout/fragment_attendance_history" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.attendanceapp.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_account"
+        android:name="com.example.attendanceapp.ui.account.AccountFragment"
+        android:label="@string/title_account"
+        tools:layout="@layout/fragment_account" >
+        <action
+            android:id="@+id/action_navigation_account_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/mapsFragment"

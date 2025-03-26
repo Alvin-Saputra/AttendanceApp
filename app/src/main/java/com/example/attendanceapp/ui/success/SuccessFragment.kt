@@ -43,13 +43,7 @@ class SuccessFragment : Fragment() {
     }
 
 
-    companion object {
-
-    }
-
     private fun playAnimation() {
-
-
 
         val tvSuccessAnim =
             ObjectAnimator.ofFloat(binding.tvSuccess, View.ALPHA, 1f).setDuration(400)
@@ -67,4 +61,6 @@ class SuccessFragment : Fragment() {
 
         }
     }
+
+
 }

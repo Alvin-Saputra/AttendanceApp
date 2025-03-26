@@ -26,8 +26,8 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
     fun getSession(): Flow<UserModel> {
         return dataStore.data.map { preferences ->
             UserModel(
-                preferences[USERNAME] ?: "",
                 preferences[USER_ID] ?: "",
+                preferences[USERNAME] ?: "",
                 preferences[IS_LOGIN] ?: false
             )
         }
@@ -44,8 +44,8 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
         private var INSTANCE: UserPreference? = null
 
         private val IS_LOGIN = booleanPreferencesKey("isLogin")
-        private val USERNAME = stringPreferencesKey("name")
-        private val USER_ID = stringPreferencesKey("userID")
+        private val USERNAME = stringPreferencesKey("username")
+        private val USER_ID = stringPreferencesKey("userId")
 
         fun getInstance(dataStore: DataStore<Preferences>): UserPreference {
             return INSTANCE ?: synchronized(this) {

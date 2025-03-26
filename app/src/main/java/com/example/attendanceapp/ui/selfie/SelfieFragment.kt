@@ -32,6 +32,7 @@ class SelfieFragment : Fragment() {
     private var _binding: FragmentSelfieBinding? = null
     private val binding get() = _binding!!
     private var imageCapture: ImageCapture? = null
+    private var userId: String? = null
 
     private val viewModel by viewModels<SelfieViewModel> {
         ViewModelFactory(requireContext())
@@ -62,6 +63,15 @@ class SelfieFragment : Fragment() {
         }
         else{
             startCamera()
+        }
+
+        viewModel.getSession().observe(viewLifecycleOwner) { user ->
+            if (user.isLogin) {
+
+            userId = user.userId
+            var username = user.username
+
+            }
         }
 
         binding.btnTakeSelfie.setOnClickListener{
@@ -130,7 +140,8 @@ class SelfieFragment : Fragment() {
 
                     viewModel.uploadSelfie(
                         requireContext(),
-                        uri!!
+                        uri!!,
+                        userId!!
                         ).observe(viewLifecycleOwner) { result ->
                         when (result) {
                             is Result.Loading -> {
