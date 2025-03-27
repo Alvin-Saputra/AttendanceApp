@@ -86,7 +86,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             val status = intent?.getStringExtra("status") ?: return
 //            viewModel.setGeofenceStatus(status) // Perbarui ViewModel
             showToast(status)
-            showToast("wkwkkkw")
+//            showToast("wkwkkkw")
 
             if(status != null){
                 binding.btnNext.isEnabled = true

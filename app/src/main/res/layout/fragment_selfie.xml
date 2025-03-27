@@ -32,7 +32,7 @@
         style="@style/H2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="48dp"
         android:text="Fit Your \nSelfie"
         android:textAlignment="center"
         android:textColor="@color/white"

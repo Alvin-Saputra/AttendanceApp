@@ -1,5 +1,6 @@
 package com.example.attendanceapp.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -11,6 +12,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.attendanceapp.R
 import com.example.attendanceapp.databinding.ActivityMainBinding
+import com.example.attendanceapp.ui.login.LoginActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,9 +36,10 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.getSession().observe(this) { user ->
             if (!user.isLogin) {
-
-                navController.navigate(R.id.action_navigation_home_to_loginFragment)
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
             }
+        }
             // Passing each menu ID as a set of Ids because each
             // menu should be considered as top level destinations.
             val appBarConfiguration = AppBarConfiguration(
@@ -66,4 +69,3 @@ class MainActivity : AppCompatActivity() {
 //        return navController.navigateUp() || super.onSupportNavigateUp()
 //    }
     }
-}

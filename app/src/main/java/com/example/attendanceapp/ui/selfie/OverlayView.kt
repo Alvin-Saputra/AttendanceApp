@@ -43,8 +43,8 @@ class OverlayView(context: Context, attrs: AttributeSet? = null) : View(context,
         super.onDraw(canvas)
 
         // Hitung dimensi persegi panjang
-        val rectWidth = width * 0.8f    // 80% dari lebar view
-        val rectHeight = height * 0.4f  // 40% dari tinggi view
+        val rectWidth = width * 0.85f    // 80% dari lebar view
+        val rectHeight = height * 0.55f  // 40% dari tinggi view
 
         // Hitung posisi persegi (tengah layar)
         val left = (width - rectWidth) / 2

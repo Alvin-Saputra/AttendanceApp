@@ -1,5 +1,6 @@
 package com.example.attendanceapp.ui.account
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.attendanceapp.R
 import com.example.attendanceapp.databinding.FragmentAccountBinding
+import com.example.attendanceapp.ui.login.LoginActivity
+import com.example.attendanceapp.ui.main.MainActivity
 
 
 class AccountFragment : Fragment() {
@@ -41,7 +44,8 @@ class AccountFragment : Fragment() {
 
                 binding.buttonLogout.setOnClickListener {
                     viewModel.logout()
-                    findNavController().navigate(R.id.action_navigation_account_to_loginFragment)
+                    startActivity(Intent(requireContext(), LoginActivity::class.java))
+                    requireActivity().finish()
                 }
             }
         }

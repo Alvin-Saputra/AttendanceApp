@@ -11,6 +11,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import android.util.Size
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
@@ -99,7 +100,9 @@ class SelfieFragment : Fragment() {
             }
             val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
 
-            imageCapture = ImageCapture.Builder().build()
+            imageCapture = ImageCapture.Builder()
+                .setTargetResolution(Size(1080, 2192))
+                .build()
 
             cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
         }, ContextCompat.getMainExecutor(requireContext()))
@@ -118,17 +121,18 @@ class SelfieFragment : Fragment() {
 
                     val uri = output.savedUri ?: return
 
-//                    // Convert URI to Bitmap
-//                    val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
-//
-//                    // Crop image based on OverlayView
-//                    val croppedBitmap = cropBitmapToOverlay(bitmap)
-//
-//                    // Save the cropped image
-//                    val croppedFile = saveBitmapToFile(requireContext(), croppedBitmap)
-//
-//                    val stringUriCroppedfile = Uri.fromFile(croppedFile)
+                    // Convert URI to Bitmap
+                    val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
 
+                    // Crop image based on OverlayView
+                    val croppedBitmap = cropBitmapToOverlay(bitmap)
+
+                    // Save the cropped image
+                    val croppedFile = saveBitmapToFile(requireContext(), croppedBitmap)
+
+                    val stringUriCroppedfile = Uri.fromFile(croppedFile).toString()
+
+                    val uriCroppedfile = Uri.fromFile(croppedFile)
 //                    val mBundle = Bundle()
 //                    mBundle.putString(EXTRA_URI, stringUriCroppedfile)
 //                    findNavController().navigate(R.id.action_selfieFragment_to_validationFragment, mBundle)
@@ -140,7 +144,7 @@ class SelfieFragment : Fragment() {
 
                     viewModel.uploadSelfie(
                         requireContext(),
-                        uri!!,
+                        uriCroppedfile!!,
                         userId!!
                         ).observe(viewLifecycleOwner) { result ->
                         when (result) {
@@ -182,29 +186,28 @@ class SelfieFragment : Fragment() {
 
 
     private fun cropBitmapToOverlay(bitmap: Bitmap): Bitmap {
-        // Ukuran view kamera
+        // Resize bitmap ke ukuran ViewFinder
         val viewWidth = binding.viewFinder.width
         val viewHeight = binding.viewFinder.height
+        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, viewWidth, viewHeight, true)
 
         // Ukuran cropping dari OverlayView
-        val rectWidth = viewWidth * 0.8f    // Sesuai dengan OverlayView
-        val rectHeight = viewHeight * 0.4f
-
+        val rectWidth = (viewWidth * 0.85f).toInt()    // Sesuai dengan OverlayView
+        val rectHeight = (viewHeight * 0.55f).toInt()
 
         val left = ((viewWidth - rectWidth) / 2).toInt()
         val top = ((viewHeight - rectHeight) / 2).toInt()
 
-        // Skala bitmap agar sesuai dengan ukuran preview
-        val scaleX = bitmap.width.toFloat() / viewWidth
-        val scaleY = bitmap.height.toFloat() / viewHeight
+        Log.d("DEBUG_SIZE", "Original Bitmap size: ${bitmap.width}x${bitmap.height}")
+        Log.d("DEBUG_SIZE", "Resized Bitmap size: ${resizedBitmap.width}x${resizedBitmap.height}")
+        Log.d("DEBUG_SIZE", "ViewFinder size: ${viewWidth}x${viewHeight}")
+        Log.d("DEBUG_SIZE", "OverlayView size: ${rectWidth}x${rectHeight}")
+        Log.d("DEBUG_SIZE", "Crop area: left=$left, top=$top, width=$rectWidth, height=$rectHeight")
 
-        val cropLeft = (left * scaleX).toInt()
-        val cropTop = (top * scaleY).toInt()
-        val cropWidth = (rectWidth * scaleX).toInt()
-        val cropHeight = (rectHeight * scaleY).toInt()
-
-        return Bitmap.createBitmap(bitmap, cropLeft, cropTop, cropWidth, cropHeight)
+        return Bitmap.createBitmap(resizedBitmap, left, top, rectWidth, rectHeight)
     }
+
+
 
 
     companion object {
