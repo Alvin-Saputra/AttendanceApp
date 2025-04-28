@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="24dp">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/image_view_alert_dialog_box_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="64dp"
+            android:layout_marginEnd="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/address_rafiki" />
+
+        <TextView
+            android:id="@+id/text_view_heading_alert_dialog_box_map"
+            style="@style/H2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:text="You're In Radius!"
+            app:layout_constraintEnd_toEndOf="@+id/image_view_alert_dialog_box_map"
+            app:layout_constraintStart_toStartOf="@+id/image_view_alert_dialog_box_map"
+            app:layout_constraintTop_toBottomOf="@+id/image_view_alert_dialog_box_map" />
+
+        <TextView
+            android:id="@+id/text_view_paragraph_alert_dialog_box_map"
+            style="@style/paragraph_reguler_md"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:gravity="center"
+            android:text="Now You Can Mark Your Attendance!"
+            app:layout_constraintEnd_toEndOf="@+id/text_view_heading_alert_dialog_box_map"
+            app:layout_constraintStart_toStartOf="@+id/text_view_heading_alert_dialog_box_map"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_heading_alert_dialog_box_map" />
+
+        <Button
+            android:id="@+id/button_alert_dialog_box_map"
+            android:layout_width="181dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="64dp"
+            android:text="Close"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_paragraph_alert_dialog_box_map" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

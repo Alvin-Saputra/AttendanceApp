@@ -90,7 +90,7 @@ class HomeFragment : Fragment() {
 
         // Rentang waktu yang diperbolehkan
         val startTime = sdf.parse("07:00") ?: return false
-        val endTime = sdf.parse("09:00") ?: return false
+        val endTime = sdf.parse("18:00") ?: return false
 
         // Mengecek apakah waktu saat ini dalam rentang
         return currentTime in startTime..endTime

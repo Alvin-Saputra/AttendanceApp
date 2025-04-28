@@ -40,9 +40,7 @@ class SelfieFragment : Fragment() {
     }
 
     private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
                 Toast.makeText(requireContext(), "Permission request granted", Toast.LENGTH_LONG).show()
                 startCamera()
@@ -92,31 +90,42 @@ class SelfieFragment : Fragment() {
 
 
     private fun startCamera() {
+
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+
         cameraProviderFuture.addListener({
+
             val cameraProvider = cameraProviderFuture.get()
+
             val preview = Preview.Builder().build().also {
                 it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
             }
-            val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
 
             imageCapture = ImageCapture.Builder()
                 .setTargetResolution(Size(1080, 2192))
                 .build()
 
+            val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+
             cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
+
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
     private fun takePhoto() {
+
         val imageCapture = imageCapture ?: return
+
         val photoFile = createCustomTempFile(requireContext())
+
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+
                     showToast("Success Taking Selfie")
 
                     val uri = output.savedUri ?: return
@@ -130,17 +139,7 @@ class SelfieFragment : Fragment() {
                     // Save the cropped image
                     val croppedFile = saveBitmapToFile(requireContext(), croppedBitmap)
 
-                    val stringUriCroppedfile = Uri.fromFile(croppedFile).toString()
-
                     val uriCroppedfile = Uri.fromFile(croppedFile)
-//                    val mBundle = Bundle()
-//                    mBundle.putString(EXTRA_URI, stringUriCroppedfile)
-//                    findNavController().navigate(R.id.action_selfieFragment_to_validationFragment, mBundle)
-
-//                    val intent = Intent()
-//                    intent.putExtra(EXTRA_CAMERAX_IMAGE, output.savedUri.toString())
-//                    setResult(CAMERAX_RESULT, intent)
-//                    finish()
 
                     viewModel.uploadSelfie(
                         requireContext(),

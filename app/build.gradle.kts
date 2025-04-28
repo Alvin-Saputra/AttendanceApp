@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
     implementation(libs.play.services.maps)
 
     implementation(libs.androidx.fragment.ktx)
@@ -57,7 +58,11 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation ("com.airbnb.android:lottie:+")
+
+
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
+
+
     implementation ("com.google.android.gms:play-services-location:21.1.0")
 
     implementation ("androidx.camera:camera-camera2:1.4.0")

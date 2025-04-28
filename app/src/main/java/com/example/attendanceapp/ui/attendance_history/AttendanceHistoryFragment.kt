@@ -130,7 +130,16 @@ class AttendanceHistoryFragment : Fragment() {
                     binding.textViewPresent.visibility = View.VISIBLE
                     binding.textViewTime.visibility = View.VISIBLE
 
-                    binding.textViewTime.text = attendance_time["time"].toString()
+                    if(attendance_time["status"] == "absent"){
+                        binding.textViewTime.text = "-"
+                        binding.textViewDate.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
+                    }
+                    else{
+                        binding.textViewTime.text = attendance_time["time"].toString()
+                        binding.textViewDate.setTextColor(ContextCompat.getColor(requireContext(), R.color.base_color_600))
+                    }
+
+
                     binding.textViewDate.text = dateFormatting.format(clickedDayCalendar.time)
                     binding.textViewMonth.text = monthFormatting.format(clickedDayCalendar.time)
                     binding.textViewDay.text  = dayFormatting.format(clickedDayCalendar.time)

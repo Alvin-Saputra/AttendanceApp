@@ -12,9 +12,9 @@ object ApiConfig {
             HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         val client = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .connectTimeout(120, TimeUnit.SECONDS) // Timeout untuk koneksi (60 detik)
-            .readTimeout(120, TimeUnit.SECONDS)    // Timeout untuk membaca data (60 detik)
-            .writeTimeout(120, TimeUnit.SECONDS)   // Timeout untuk menulis
+            .connectTimeout(120, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
+            .writeTimeout(120, TimeUnit.SECONDS)
             .build()
         val retrofit = Retrofit.Builder()
             .baseUrl("https://renewed-kettie-personal-usage-only-4ccf7891.koyeb.app/")

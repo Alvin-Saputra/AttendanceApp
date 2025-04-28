@@ -2,73 +2,55 @@ package com.example.attendanceapp.ui.map
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
-import android.location.Location
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.fragment.app.Fragment
-
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
-import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.navigateUp
 import com.example.attendanceapp.R
-import com.example.attendanceapp.databinding.FragmentHomeBinding
 import com.example.attendanceapp.databinding.FragmentMapsBinding
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapsFragment : Fragment(), OnMapReadyCallback {
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var mMap: GoogleMap
-    private var marker: Marker? = null
     private var _binding: FragmentMapsBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var geofencingClient: GeofencingClient
 
-//    private val centerLat = -6.225596758377779
-//    private val centerLng = 106.65707396575687
-    private val centerLat = -6.118588
-    private val centerLng = 106.686910
+    private val centerLat = -6.225596758377779
+    private val centerLng = 106.65707396575687
+
+//    private val centerLat = -6.118588
+//    private val centerLng = 106.686910
     private val geofenceRadius = 100.0
 
     private val geofencePendingIntent: PendingIntent by lazy {
@@ -84,16 +66,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     private val geofenceReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val status = intent?.getStringExtra("status") ?: return
-//            viewModel.setGeofenceStatus(status) // Perbarui ViewModel
             showToast(status)
-//            showToast("wkwkkkw")
 
             if(status != null){
+                showSuccessGeoFenceDialog()
                 binding.btnNext.isEnabled = true
             }
         }
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -116,34 +96,19 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
-        setupLocationClient()
         binding.btnBack.setOnClickListener {
             findNavController().navigate(R.id.action_mapsFragment_to_navigation_home)
         }
     }
 
-    private fun setupLocationClient() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-    }
-
-
-    private fun addMarker(location: LatLng, title: String, snippet: String? = null): Marker {
-        val markerOptions = MarkerOptions().position(location).title(title)
-        snippet?.let { markerOptions.snippet(it) }
-        marker?.remove()
-        marker = mMap.addMarker(markerOptions)
-        return marker!!
-    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = true
         mMap.uiSettings.isIndoorLevelPickerEnabled = true
-
         mMap.uiSettings.isMapToolbarEnabled = true
 
         checkPermissions()
-//        setMapStyle()
 
     }
 
@@ -153,31 +118,24 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         val allGranted = permissions.entries.all { it.value }
 
         if (allGranted) {
-            // Jika izin foreground diberikan, cek apakah perlu izin background
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // Cek apakah izin background sudah diberikan
                 if (ActivityCompat.checkSelfPermission(
                         requireContext(),
                         Manifest.permission.ACCESS_BACKGROUND_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED) {
-                    // Minta izin background secara terpisah
                     showToast("Aplikasi memerlukan izin lokasi latar belakang")
                     requestBackgroundPermission()
                 } else {
-                    // Izin background sudah diberikan
                     setupMapWithLocation()
                 }
             } else {
-                // Untuk Android < 10, tidak perlu izin background khusus
                 setupMapWithLocation()
             }
         } else {
             showToast("Aplikasi membutuhkan izin lokasi untuk berfungsi dengan baik")
-//            Log.d(TAG, "Izin foreground ditolak: ${permissions.entries}")
         }
     }
 
-    // Step 2: Launcher terpisah untuk background permission
     private val requestBackgroundPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -185,7 +143,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             setupMapWithLocation()
         } else {
             showToast("Aplikasi membutuhkan izin lokasi latar belakang untuk geofencing")
-//            Log.d(TAG, "Izin background ditolak")
         }
     }
 
@@ -228,21 +185,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
     private fun checkPermissions(){
         if (checkForegroundLocationPermission()) {
-            // Foreground izin sudah diberikan
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 if (checkBackgroundLocationPermission()) {
-                    // Semua izin sudah diberikan
                     setupMapWithLocation()
                 } else {
-                    // Minta izin background
                     requestBackgroundPermission()
                 }
             } else {
-                // Android < 10, tidak perlu izin background
                 setupMapWithLocation()
             }
         } else {
-            // Minta izin foreground dulu
             requestForegroundPermissions()
         }
 
@@ -282,8 +234,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
     private fun requestBackgroundPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // Di Android 10+, perlu menampilkan dialog atau pesan
-            // sebelum meminta izin background location
+
             showToast("Mohon aktifkan izin 'Izinkan sepanjang waktu' untuk fitur geofencing")
             Log.d(TAG, "Meminta izin background location")
 
@@ -301,34 +252,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
         try {
             mMap.isMyLocationEnabled = true
-            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                location?.let {
-                    val userLocation = LatLng(it.latitude, it.longitude)
 
-                    // Tambahkan marker untuk lokasi pengguna
-//                    addMarker(userLocation, "Lokasi Anda")
-
-//                    val markerOptions = MarkerOptions()
-//                        .position(userLocation)
-//                        .title("Lokasi Anda")
-//                        .icon(
-//                            vectorToBitmap(
-//                                R.drawable.baseline_person_pin_24,
-//                                Color.parseColor("#3DDC84")
-//                            )
-//                        )
-//
-//                    mMap.addMarker(markerOptions)
-
-                    // Tambahkan marker dan lingkaran untuk lokasi kampus
                     val kampusLocation = LatLng(centerLat, centerLng)
 
-                    // Tambahkan marker kampus
                     mMap.addMarker(MarkerOptions()
                         .position(kampusLocation)
                         .title("Kampus"))
 
-                    // Tambahkan lingkaran geofence
                     mMap.addCircle(
                         CircleOptions()
                             .center(kampusLocation)
@@ -338,30 +268,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                             .strokeWidth(5f)
                     )
 
-                    // Gerakkan kamera ke lokasi kampus dengan zoom yang sesuai
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(kampusLocation, 18f))
-                } ?: run {
-                    // Jika lokasi null, setidaknya tampilkan area kampus
-                    val kampusLocation = LatLng(centerLat, centerLng)
-
-                    mMap.addMarker(MarkerOptions()
-                        .position(kampusLocation)
-                        .title("Kampus"))
-
-                    mMap.addCircle(
-                        CircleOptions()
-                            .center(kampusLocation)
-                            .radius(geofenceRadius)
-                            .fillColor(0x40ADD8E6)
-                            .strokeColor(Color.BLUE)
-                            .strokeWidth(5f)
-                    )
-
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(kampusLocation, 18f))
 
-                    showToast("Tidak dapat menemukan lokasi Anda saat ini")
-                }
-            }
             addGeofence()
 
         } catch (e: Exception) {
@@ -371,58 +279,42 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
     }
 
+    private fun showSuccessGeoFenceDialog(){
+        val dialogView = layoutInflater.inflate(R.layout.map_alert_dialog_box, null)
 
-    private fun vectorToBitmap(@DrawableRes id: Int, @ColorInt color: Int): BitmapDescriptor {
-        val vectorDrawable = ResourcesCompat.getDrawable(resources, id, null)
-        if (vectorDrawable == null) {
-            Log.e("BitmapHelper", "Resource not found")
-            return BitmapDescriptorFactory.defaultMarker()
+        val dismissButton = dialogView.findViewById<Button>(R.id.button_alert_dialog_box_map)
+
+        val builder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+
+        val alertDialog = builder.create()
+
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dismissButton.setOnClickListener{
+            alertDialog.dismiss()
         }
-        val bitmap = Bitmap.createBitmap(
-            vectorDrawable.intrinsicWidth,
-            vectorDrawable.intrinsicHeight,
-            Bitmap.Config.ARGB_8888
+
+        alertDialog.show()
+
+        alertDialog.window?.setLayout(
+            (requireContext().resources.displayMetrics.widthPixels * 0.85).toInt(), // 85% dari layar
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        val canvas = Canvas(bitmap)
-        vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
-        DrawableCompat.setTint(vectorDrawable, color)
-        vectorDrawable.draw(canvas)
-        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
-
-
-    private fun setMapStyle() {
-        try {
-            val success =
-                mMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                        requireContext(),
-                        R.raw.map_style
-                    )
-                )
-            if (!success) {
-                Log.e(TAG, "Style parsing failed.")
-            }
-        } catch (exception: Resources.NotFoundException) {
-            Log.e(TAG, "Can't find style. Error: ", exception)
-        }
-    }
-
 
     companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
-        private const val BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE = 2
         private const val TAG = "MapsFragment"
     }
 
-    override fun onResume() {
-        super.onResume()
-        val filter = IntentFilter("GeofenceStatusUpdate")
-        requireContext().registerReceiver(geofenceReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
-    }
+        override fun onResume() {
+            super.onResume()
+            val filter = IntentFilter("GeofenceStatusUpdate")
+            requireContext().registerReceiver(geofenceReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        }
 
-    override fun onPause() {
-        super.onPause()
-        requireContext().unregisterReceiver(geofenceReceiver)
+        override fun onPause() {
+            super.onPause()
+            requireContext().unregisterReceiver(geofenceReceiver)
+        }
     }
-}

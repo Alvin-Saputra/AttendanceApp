@@ -43,7 +43,8 @@ class Repository(private val apiService: ApiService, private val userPreference:
 
     fun uploadSelfie(context: Context, ImageUri: Uri, userId: String): LiveData<Result<FaceClassificationResponse>> {
         resultFaceClassification.postValue(Result.Loading)
-        ImageUri?.let { uri ->
+
+        ImageUri.let { uri ->
             val imageFile = uriToFile(uri, context)
             Log.d("Image File", "showImage: ${imageFile.path}")
 
