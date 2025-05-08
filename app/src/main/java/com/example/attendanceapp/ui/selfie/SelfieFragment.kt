@@ -6,12 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.Manifest
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.RenderEffect
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import android.util.Size
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
@@ -34,6 +39,9 @@ class SelfieFragment : Fragment() {
     private val binding get() = _binding!!
     private var imageCapture: ImageCapture? = null
     private var userId: String? = null
+    private var alertDialog: AlertDialog? = null
+
+    private var errorMessageShown = false
 
     private val viewModel by viewModels<SelfieViewModel> {
         ViewModelFactory(requireContext())
@@ -78,6 +86,53 @@ class SelfieFragment : Fragment() {
         }
 
         binding.progressBar.visibility = View.GONE
+        errorMessageShown = false
+
+        viewModel.uploadResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    if (alertDialog?.isShowing == true) {
+                        alertDialog?.dismiss()
+                        alertDialog = null
+                    }
+                    errorMessageShown = false
+                    alertDialog = showProcessDialog()
+                    binding.viewFinder.visibility = View.GONE
+                    binding.imageViewSelfie.visibility = View.VISIBLE
+//                        binding.imageViewSelfie.setImageBitmap(bitmap)
+                    binding.blackOverlay.visibility = View.VISIBLE
+
+                    Log.d("Selfie Fragment", "Loading upload image...")
+//                                binding.progressBar.visibility = View.VISIBLE
+                }
+
+                is Result.Success -> {
+//                                binding.progressBar.visibility = View.GONE
+                    alertDialog?.dismiss()
+                    alertDialog = null
+                    val resultUploadImage = result.data
+                    showToast(resultUploadImage.status)
+                    if (isAdded && findNavController().currentDestination?.id == R.id.selfieFragment) {
+                        findNavController().navigate(R.id.action_selfieFragment_to_successFragment)
+                    }
+                }
+
+                is Result.Error -> {
+                    binding.imageViewSelfie.visibility = View.GONE
+                    binding.blackOverlay.visibility = View.GONE
+                    binding.viewFinder.visibility = View.VISIBLE
+                    alertDialog?.dismiss()
+                    alertDialog = null
+                    binding.progressBar.visibility = View.GONE
+                    if (!errorMessageShown) {
+                        errorMessageShown = true
+                        Log.e("Selfie Fragment", "Error: ${result.error}")
+                        showToast(result.error)
+
+                    }
+                }
+            }
+        }
 
         return root
     }
@@ -113,7 +168,7 @@ class SelfieFragment : Fragment() {
     }
 
     private fun takePhoto() {
-
+        errorMessageShown = false
         val imageCapture = imageCapture ?: return
 
         val photoFile = createCustomTempFile(requireContext())
@@ -126,7 +181,7 @@ class SelfieFragment : Fragment() {
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
 
-                    showToast("Success Taking Selfie")
+//                    showToast("Success Taking Selfie")
 
                     val uri = output.savedUri ?: return
 
@@ -145,27 +200,7 @@ class SelfieFragment : Fragment() {
                         requireContext(),
                         uriCroppedfile!!,
                         userId!!
-                        ).observe(viewLifecycleOwner) { result ->
-                        when (result) {
-                            is Result.Loading -> {
-                                Log.d("Selfie Fragment", "Loading upload image...")
-                                binding.progressBar.visibility = View.VISIBLE
-                            }
-
-                            is Result.Success -> {
-                                binding.progressBar.visibility = View.GONE
-                                val resultUploadImage = result.data
-                                showToast(resultUploadImage.status)
-                                findNavController().navigate(R.id.action_selfieFragment_to_successFragment)
-                            }
-
-                            is Result.Error -> {
-                                binding.progressBar.visibility = View.GONE
-                                Log.e("AddStoryActivity", "Error: ${result.error}")
-                                showToast(result.error)
-                            }
-                        }
-                    }
+                        )
                 }
                 override fun onError(exc: ImageCaptureException) {
 //                    Toast.makeText(
@@ -207,6 +242,26 @@ class SelfieFragment : Fragment() {
     }
 
 
+    private fun showProcessDialog():AlertDialog{
+        val dialogView = layoutInflater.inflate(R.layout.processing_selfie_dialog, null)
+
+        val builder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+
+        val alertDialog = builder.create()
+
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+        alertDialog.show()
+
+        alertDialog.window?.setLayout(
+            (requireContext().resources.displayMetrics.widthPixels * 0.85).toInt(), // 85% dari layar
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+        return alertDialog
+    }
 
 
     companion object {

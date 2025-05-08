@@ -26,6 +26,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.attendanceapp.R
 import com.example.attendanceapp.databinding.FragmentMapsBinding
 import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
@@ -46,11 +47,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var geofencingClient: GeofencingClient
 
-    private val centerLat = -6.225596758377779
-    private val centerLng = 106.65707396575687
+//    private val centerLat = -6.225596758377779
+//    private val centerLng = 106.65707396575687
 
-//    private val centerLat = -6.118588
-//    private val centerLng = 106.686910
+    private val centerLat = -6.118588
+    private val centerLng = 106.686910
+
     private val geofenceRadius = 100.0
 
     private val geofencePendingIntent: PendingIntent by lazy {
@@ -66,11 +68,17 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     private val geofenceReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val status = intent?.getStringExtra("status") ?: return
-            showToast(status)
+//            showToast(status)
 
-            if(status != null){
+            if(status == "Anda telah di dalam area" || status == "Anda telah memasuki area"){
                 showSuccessGeoFenceDialog()
                 binding.btnNext.isEnabled = true
+                binding.placeInfoCard.visibility = View.VISIBLE
+            }
+
+            else if(status == "Anda telah dari keluar area"){
+                binding.btnNext.isEnabled = false
+                binding.placeInfoCard.visibility = View.GONE
             }
         }
     }
@@ -88,6 +96,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         }
 
         binding.btnNext.isEnabled = false
+        binding.placeInfoCard.visibility = View.GONE
 
         return root
     }
@@ -155,7 +164,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             .setRequestId("kampus")
             .setCircularRegion(centerLat, centerLng, geofenceRadius.toFloat())
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
-            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL or Geofence.GEOFENCE_TRANSITION_ENTER)
+            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL or Geofence.GEOFENCE_TRANSITION_ENTER or GEOFENCE_TRANSITION_EXIT)
             .setLoiteringDelay(1000)
             .build()
 
@@ -168,7 +177,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             addOnCompleteListener {
                 geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
                     addOnSuccessListener {
-                        showToast("Geofencing added")
+//                        showToast("Geofencing added")
                     }
                     addOnFailureListener {
                         showToast("Geofencing not added: ${it.message}")

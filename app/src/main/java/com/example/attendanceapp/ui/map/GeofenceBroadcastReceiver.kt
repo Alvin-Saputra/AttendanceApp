@@ -30,11 +30,12 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             val geofenceTransition = geofencingEvent.geofenceTransition
 
             if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER || geofenceTransition ==
-                Geofence.GEOFENCE_TRANSITION_DWELL) {
+                Geofence.GEOFENCE_TRANSITION_DWELL || geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
                 val geofenceTransitionString =
                     when (geofenceTransition) {
                         Geofence.GEOFENCE_TRANSITION_ENTER -> "Anda telah memasuki area"
                         Geofence.GEOFENCE_TRANSITION_DWELL -> "Anda telah di dalam area"
+                        Geofence.GEOFENCE_TRANSITION_EXIT -> "Anda telah dari keluar area"
                         else -> "Invalid transition type"
                     }
 

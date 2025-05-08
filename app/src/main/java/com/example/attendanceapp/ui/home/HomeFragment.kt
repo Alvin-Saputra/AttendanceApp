@@ -1,9 +1,13 @@
 package com.example.attendanceapp.ui.home
 
+import android.app.AlertDialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -37,18 +41,17 @@ class HomeFragment : Fragment() {
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
 
-//        try {
-//            val inputStream = requireContext().assets.open("Deadline.gif")
-//            Glide.with(this)
-//                .asGif()
-//                .load(inputStream)
-//                .into(binding.gifImageView)
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        }
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        if(checkTimeRange() && isTodayWeekday()){
+            binding.gifImageView.visibility = View.GONE
+            binding.lottieAnimationView.visibility = View.VISIBLE
+        }
+        else{
+            binding.gifImageView.visibility = View.VISIBLE
+            binding.lottieAnimationView.visibility = View.GONE
+        }
 
         binding.tvDay.text = getCurrentDate()
 
@@ -59,7 +62,8 @@ class HomeFragment : Fragment() {
                 view.findNavController().navigate(R.id.action_navigation_home_to_mapsFragment)
             }
             else{
-                showToast("Anda tidak bisa melakukan absensi saat ini")
+//                showToast("Anda tidak bisa melakukan absensi saat ini")
+                showInfoDialog()
             }
 
         }
@@ -78,7 +82,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun getCurrentDate(): String {
-        val sdf = SimpleDateFormat("EEEE, dd", Locale.getDefault())
+        val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.getDefault())
         return sdf.format(Date())
     }
 
@@ -90,7 +94,7 @@ class HomeFragment : Fragment() {
 
         // Rentang waktu yang diperbolehkan
         val startTime = sdf.parse("07:00") ?: return false
-        val endTime = sdf.parse("18:00") ?: return false
+        val endTime = sdf.parse("24:00") ?: return false
 
         // Mengecek apakah waktu saat ini dalam rentang
         return currentTime in startTime..endTime
@@ -109,5 +113,27 @@ class HomeFragment : Fragment() {
         return dayOfWeek in Calendar.MONDAY..Calendar.FRIDAY
     }
 
+    private fun showInfoDialog(){
+        val dialogView = layoutInflater.inflate(R.layout.map_alert_dialog_box_home, null)
 
+        val dismissButton = dialogView.findViewById<Button>(R.id.button_alert_dialog_box_map_home)
+
+        val builder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+
+        val alertDialog = builder.create()
+
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dismissButton.setOnClickListener{
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
+
+        alertDialog.window?.setLayout(
+            (requireContext().resources.displayMetrics.widthPixels * 0.85).toInt(), // 85% dari layar
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+    }
 }

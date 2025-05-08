@@ -29,6 +29,7 @@ class Repository(private val apiService: ApiService, private val userPreference:
     private val resultLoginRequest = MediatorLiveData<Result<LoginResponse>>()
     private val resultAttendanceHistory = MediatorLiveData<Result<List<AttendanceDataItem>>>()
 
+
     suspend fun logout() {
         userPreference.logout()
     }
@@ -70,7 +71,11 @@ class Repository(private val apiService: ApiService, private val userPreference:
                         if (classficationResponse != null) {
                             if (classficationResponse.status == "success") {
                                 resultFaceClassification.postValue(Result.Success(classficationResponse))
-                            } else {
+                            }
+                            else if (classficationResponse.status == "error") {
+                                resultFaceClassification.postValue(Result.Error(classficationResponse.message))
+                            }
+                            else {
                                 resultFaceClassification.postValue(Result.Error("Unknown Error"))
                             }
                         }
@@ -81,7 +86,7 @@ class Repository(private val apiService: ApiService, private val userPreference:
                 }
 
                 override fun onFailure(call: Call<FaceClassificationResponse>, t: Throwable) {
-                    resultFaceClassification.postValue(Result.Error("Can't Upload, Check Your Connection"))
+                    resultFaceClassification.postValue(Result.Error("Try Again"))
                 }
             })
         } ?: run { resultFaceClassification.postValue(Result.Error("No Image Added")) }

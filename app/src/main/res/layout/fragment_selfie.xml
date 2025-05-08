@@ -18,6 +18,14 @@
 
     </androidx.camera.view.PreviewView>
 
+    <ImageView
+        android:id="@+id/imageViewSelfie"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:src="@tools:sample/avatars"
+        android:scaleType="centerCrop"
+        android:visibility="gone"/>
+
     <com.example.attendanceapp.ui.selfie.OverlayView
         android:id="@+id/overlayView"
         android:layout_width="match_parent"
@@ -65,5 +73,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/black_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:visibility="gone"
+        android:alpha="0.5"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
