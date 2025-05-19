@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.attendanceapp.R
 import com.example.attendanceapp.databinding.FragmentAccountBinding
+import com.example.attendanceapp.ui.change_password.ChangePasswordActivity
 import com.example.attendanceapp.ui.login.LoginActivity
 import com.example.attendanceapp.ui.main.MainActivity
 
@@ -48,6 +49,11 @@ class AccountFragment : Fragment() {
                     requireActivity().finish()
                 }
             }
+        }
+
+        binding.cardViewChangePassword.setOnClickListener {
+            startActivity(Intent(requireContext(), ChangePasswordActivity::class.java))
+            requireActivity().finish()
         }
 
         return root

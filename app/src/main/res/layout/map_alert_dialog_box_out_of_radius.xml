@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="24dp">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/gifImageView_out_of_radius"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="48dp"
+            android:src="@drawable/out_of_radius"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+        <TextView
+            android:id="@+id/text_view_heading_dialog_box_map_out_of_radius"
+            style="@style/H2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:text="You're Out\nof Radius!"
+            app:layout_constraintEnd_toEndOf="@+id/gifImageView_out_of_radius"
+            app:layout_constraintStart_toStartOf="@+id/gifImageView_out_of_radius"
+            app:layout_constraintTop_toBottomOf="@+id/gifImageView_out_of_radius" />
+
+        <TextView
+            android:id="@+id/text_view_paragraph_alert_dialog_box_map"
+            style="@style/paragraph_reguler_md"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:gravity="center"
+            android:text="Unfortunatley, you can't\nyour attendance."
+            app:layout_constraintEnd_toEndOf="@+id/text_view_heading_dialog_box_map_out_of_radius"
+            app:layout_constraintStart_toStartOf="@+id/text_view_heading_dialog_box_map_out_of_radius"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_heading_dialog_box_map_out_of_radius" />
+
+        <Button
+            android:id="@+id/button_dialog_box_map_out_of_radius"
+            android:layout_width="181dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="64dp"
+            android:text="Close"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_paragraph_alert_dialog_box_map" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

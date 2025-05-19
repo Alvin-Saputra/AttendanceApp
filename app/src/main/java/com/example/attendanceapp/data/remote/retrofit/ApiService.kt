@@ -3,6 +3,7 @@ package com.example.attendanceapp.data.remote.retrofit
 import com.example.attendanceapp.data.remote.response.AttendanceHistoryResponse
 import com.example.attendanceapp.data.remote.response.FaceClassificationResponse
 import com.example.attendanceapp.data.remote.response.LoginResponse
+import com.example.attendanceapp.data.remote.response.UpdatePasswordResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -34,4 +35,12 @@ interface ApiService {
     fun getAttendanceHistory(
         @Field("user_id") userId: String,
     ): Call<AttendanceHistoryResponse>
+
+    @FormUrlEncoded
+    @POST("update-password")
+    fun updatePassword(
+        @Field("user_id") userId: String,
+        @Field("current_password") currentPassword: String,
+        @Field("new_password") newPassword: String
+    ): Call<UpdatePasswordResponse>
 }

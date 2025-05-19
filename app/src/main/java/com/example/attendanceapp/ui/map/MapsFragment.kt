@@ -53,7 +53,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     private val centerLat = -6.118588
     private val centerLng = 106.686910
 
-    private val geofenceRadius = 100.0
+    private val geofenceRadius = 40.0
 
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(requireContext(), GeofenceBroadcastReceiver::class.java).apply {
@@ -77,6 +77,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             }
 
             else if(status == "Anda telah dari keluar area"){
+                outOfRadiusGeoFenceDialog()
                 binding.btnNext.isEnabled = false
                 binding.placeInfoCard.visibility = View.GONE
             }
@@ -292,6 +293,30 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         val dialogView = layoutInflater.inflate(R.layout.map_alert_dialog_box, null)
 
         val dismissButton = dialogView.findViewById<Button>(R.id.button_alert_dialog_box_map)
+
+        val builder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+
+        val alertDialog = builder.create()
+
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dismissButton.setOnClickListener{
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
+
+        alertDialog.window?.setLayout(
+            (requireContext().resources.displayMetrics.widthPixels * 0.85).toInt(), // 85% dari layar
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+    }
+
+    private fun outOfRadiusGeoFenceDialog(){
+        val dialogView = layoutInflater.inflate(R.layout.map_alert_dialog_box_out_of_radius, null)
+
+        val dismissButton = dialogView.findViewById<Button>(R.id.button_dialog_box_map_out_of_radius)
 
         val builder = AlertDialog.Builder(requireContext())
             .setView(dialogView)

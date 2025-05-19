@@ -12,6 +12,7 @@ import com.example.attendanceapp.data.remote.response.AttendanceDataItem
 import com.example.attendanceapp.data.remote.response.AttendanceHistoryResponse
 import com.example.attendanceapp.data.remote.response.FaceClassificationResponse
 import com.example.attendanceapp.data.remote.response.LoginResponse
+import com.example.attendanceapp.data.remote.response.UpdatePasswordResponse
 import com.example.attendanceapp.data.remote.retrofit.ApiService
 import com.example.attendanceapp.utility.uriToFile
 import kotlinx.coroutines.flow.Flow
@@ -27,6 +28,7 @@ import retrofit2.Response
 class Repository(private val apiService: ApiService, private val userPreference: UserPreference) {
     private val resultFaceClassification = MediatorLiveData<Result<FaceClassificationResponse>>()
     private val resultLoginRequest = MediatorLiveData<Result<LoginResponse>>()
+    private val resultUpdatePasswordRequest = MediatorLiveData<Result<UpdatePasswordResponse>>()
     private val resultAttendanceHistory = MediatorLiveData<Result<List<AttendanceDataItem>>>()
 
 
@@ -113,7 +115,7 @@ class Repository(private val apiService: ApiService, private val userPreference:
                 } else {
                     val loginResponse = response.body()
                     Log.d("LoginRequest", "Login Failed: ${loginResponse?.message}")
-                    resultLoginRequest.postValue(Result.Error("${loginResponse?.message}"))
+                    resultLoginRequest.postValue(Result.Error("Invalid Crendetials"))
                 }
             }
 
@@ -154,6 +156,39 @@ class Repository(private val apiService: ApiService, private val userPreference:
             }
         })
         return resultAttendanceHistory
+    }
+
+
+    fun updatePasswordRequest(userId: String, currentPassword: String, newPassword:String): LiveData<Result<UpdatePasswordResponse>> {
+        resultUpdatePasswordRequest.postValue(Result.Loading)
+
+        val client = apiService.updatePassword(userId, currentPassword, newPassword)
+        client.enqueue(object : Callback<UpdatePasswordResponse> {
+            override fun onResponse(
+                call: Call<UpdatePasswordResponse>,
+                response: Response<UpdatePasswordResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val updatePasswordResponse = response.body()
+                    if (updatePasswordResponse != null) {
+                        if (updatePasswordResponse.status == "success") {
+                            resultUpdatePasswordRequest.postValue(Result.Success(updatePasswordResponse))
+                        }
+                        else if (updatePasswordResponse.status == "error") {
+                            resultUpdatePasswordRequest.postValue(Result.Error(updatePasswordResponse.message))
+                        }
+                    }
+                } else {
+                    val updatePasswordResponse = response.body()
+                    resultUpdatePasswordRequest.postValue(Result.Error("Try Again"))
+                }
+            }
+
+            override fun onFailure(call: Call<UpdatePasswordResponse>, t: Throwable) {
+                resultUpdatePasswordRequest.postValue(Result.Error("Check Your Connection"))
+            }
+        })
+        return resultUpdatePasswordRequest
     }
 
 }

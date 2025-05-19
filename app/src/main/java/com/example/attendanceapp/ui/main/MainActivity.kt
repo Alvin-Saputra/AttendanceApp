@@ -6,6 +6,7 @@ import android.view.View
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavOptions
 //import androidx.glance.visibility
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -33,6 +34,18 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
+
+        val navigateTo = intent.getStringExtra("navigateTo")
+
+        if (navigateTo == "Account") {
+            binding.navView.selectedItemId = R.id.navigation_account
+
+            val navOptions = NavOptions.Builder()
+                .setPopUpTo(R.id.navigation_home, true)
+                .build()
+
+            navController.navigate(R.id.navigation_account, null, navOptions)
+        }
 
         viewModel.getSession().observe(this) { user ->
             if (!user.isLogin) {
